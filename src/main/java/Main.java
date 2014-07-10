@@ -2,6 +2,9 @@ package main.java;
 
 
 import java.io.*;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
@@ -13,7 +16,10 @@ public class Main {
 	public static Commands command = Commands.getInstance();	
 	public static Scanner scanner;
 	public static String line;
-	
+	public static  StringBuilder formatted;
+	public static Calendar calendar;
+	public static Timestamp currentTimestamp;
+	public static SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss.SSS");
 	
 	public static void main(String[] args)throws IOException
 	{
@@ -25,8 +31,9 @@ public class Main {
 	        
 	        while(scanner.hasNext()){
 	        	line=scanner.nextLine();
+	        	
 	        	if(line.contains("Jps")|| line.contains("eclipse"))continue;
-	        	String [] jps = line.split("\\s+");
+	        	String [] jps = line.trim().split("\\s+");
 	        	jpsList.add(new JavaProcess(jps[0],jps[1]));	        	
 	        	
 	        }
@@ -38,12 +45,12 @@ public class Main {
 		        
 		        while(scanner.hasNext()){
 		        	line=scanner.nextLine();
-		        	String [] jps = line.split("\\s+");
-		        	
+		        	String [] jps = line.trim().split("\\s+");
+		        	//System.out.println(line);
 		        	for(JavaProcess objects: jpsList){
-			        	
-		        		if(jps[0].equals(objects.getPID())){
-		        			
+		        		
+		        		if(jps[0].trim().equals(objects.getPID().trim())){
+		        		
 		        			objects.setCPU(jps[jps.length-4]);
 		        			objects.setMem(jps[jps.length-3]);       			
 		        			
@@ -51,12 +58,17 @@ public class Main {
 			        }       	
 		        	
 		        }
-		        
+		        calendar = Calendar.getInstance();
+		        formatted = new StringBuilder();
+		        currentTimestamp = new java.sql.Timestamp(calendar.getTime().getTime());
+		        String formatedTime = format.format(currentTimestamp);
 		        for(JavaProcess objects: jpsList){
 		        	
-		        	System.out.println(String.format("%s%% CPU usage %s%% MEM usage by process %s ",objects.getCPU(),objects.getMem(),objects.getName()));
-		        	
+		        	formatted.append(String.format("%s %s%% CPU usage %s%% MEM usage by process %s  \n",formatedTime,objects.getCPU(),objects.getMem(),objects.getName()));
+		        			        	
 		        }
+		        
+		        System.out.println(formatted.toString());
 		        
 		        try {
 					Thread.sleep(2000);
