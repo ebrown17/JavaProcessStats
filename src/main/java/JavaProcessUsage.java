@@ -3,6 +3,7 @@ package main.java;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -21,7 +22,8 @@ public class JavaProcessUsage {
 	public static String line;
 	public static StringBuilder formatted;
 	public static String [] jps;		
-	public static HashMap<String, String> jpsMap = new HashMap<String, String>();	
+	public static HashMap<String, String> jpsMap = new HashMap<String, String>();
+	public static ArrayList<String> test;
 	public static String formattedTime;
 	public static String pid,name,cpu,mem;
 	
@@ -40,17 +42,25 @@ public class JavaProcessUsage {
 	        	jpsMap.put(pid, name);	        	
 	        }
 	        
-	       /* SwingUtilities.invokeLater(new Runnable() {
+	    /*  SwingUtilities.invokeLater(new Runnable() {
 				
 				public void run(){
 					new Interface(jpsMap.size());
 				}
 				
 			});*/
+        	
+        	RunGUI.startGUI(jpsMap.size());
 	        
-	        
+        	for(String value: jpsMap.values()){
+        		System.out.println(value);
+        		RunGUI.createLabels(value);
+        	}
+        	RunGUI.addLabels();
+        	
 	        while(true){
 	        	//long start = System.nanoTime();
+	        	test = new ArrayList<String>();
 		        process = command.getTop().start();
 		        scanner = new Scanner(process.getInputStream());
 		        
@@ -67,16 +77,23 @@ public class JavaProcessUsage {
 		        	}
 		        	pid = jps[0];
 		        	cpu = jps[jps.length-4];
-		        	mem = jps[jps.length-3];		        	    	
-		        	formatted.append(String.format("%s %s%% CPU usage %s%% MEM usage by process %s  \n",formattedTime,cpu,mem,jpsMap.get(pid)));		             		        	
+		        	mem = jps[jps.length-3];	
+		        	name = jpsMap.get(pid);
+		        	formatted.append(String.format("%s %s%% CPU usage %s%% MEM usage by process %s  \n",formattedTime,cpu,mem,name));
+		        	test.add(name);
+		        	test.add(cpu);
+		        	test.add(mem);
+		        	test.add(formattedTime);
+		        	
 		        }
 		        //long end = System.nanoTime();
 		       // System.out.println((end-start)/1000000);
 		        System.out.println(formatted.toString());
-		        
+		        RunGUI.setText(test);
 	        	
 	        	
 		        try {
+		        	
 		        	line=null;
 					formattedTime = null;
 		        	formatted =null;
