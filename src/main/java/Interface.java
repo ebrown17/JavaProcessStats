@@ -12,11 +12,11 @@ import javax.swing.SwingConstants;
 public class Interface {
 	
 	JFrame frame;
-	int size;
+	
 	//static ArrayList<JLabel> labelList = new ArrayList<JLabel>();
 	
-	Interface(int size){
-		this.size = size;
+	Interface(){
+		
 		
 		frame = new JFrame("Running Java Processes");
 		frame.setLayout(new GridLayout(0,4,4,4));

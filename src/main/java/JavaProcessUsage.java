@@ -34,23 +34,17 @@ public class JavaProcessUsage {
 	        
 	        while(scanner.hasNext()){
 	        	line=scanner.nextLine();	        	
-	        	if(line.contains("Jps")|| line.contains("eclipse"))continue;
+	        	if(line.contains("Jps"))continue;
 	        	jps = line.trim().split("\\s+");
 	        	pid=jps[0];
 	        	name=jps[1];
-	        	;
+	        	
 	        	jpsMap.put(pid, name);	        	
 	        }
 	        
-	    /*  SwingUtilities.invokeLater(new Runnable() {
-				
-				public void run(){
-					new Interface(jpsMap.size());
-				}
-				
-			});*/
+
         	
-        	RunGUI.startGUI(jpsMap.size());
+        	RunGUI.startGUI();
 	        
         	for(String value: jpsMap.values()){
         		System.out.println(value);
@@ -59,6 +53,23 @@ public class JavaProcessUsage {
         	RunGUI.addLabels();
         	
 	        while(true){
+	        	process = command.getJps().start();      
+		        scanner = new Scanner(process.getInputStream());	     
+		        
+		        while(scanner.hasNext()){
+		        	line=scanner.nextLine();	        	
+		        	if(line.contains("Jps"))continue;
+		        	jps = line.trim().split("\\s+");
+		        	pid=jps[0];
+		        	name=jps[1];
+		        	
+		        	if(!jpsMap.containsKey(pid)){
+		        		jpsMap.put(pid, name);
+		        	}		        	
+		        	        	
+		        }
+	        	
+	        	
 	        	//long start = System.nanoTime();
 	        	test = new ArrayList<String>();
 		        process = command.getTop().start();
