@@ -17,13 +17,13 @@ public class JavaProcessUsage {
 	
 	public static Process process;
 	public static Commands command = Commands.getInstance();
-	
+	public static JavaProcess jpsProcess;
 	public static Scanner scanner;
 	public static String line;
 	public static StringBuilder formatted;
 	public static String [] jps;		
-	public static HashMap<String, String> jpsMap = new HashMap<String, String>();
-	public static ArrayList<String> test;
+	public static HashMap<String, JavaProcess> jpsMap = new HashMap<String, JavaProcess>();
+	public static ArrayList<JavaProcess> test;
 	public static String formattedTime;
 	public static String pid,name,cpu,mem;
 	
@@ -39,18 +39,16 @@ public class JavaProcessUsage {
 	        	pid=jps[0];
 	        	name=jps[1];
 	        	
-	        	jpsMap.put(pid, name);	        	
+	        	jpsMap.put(pid, new JavaProcess(pid,name));	        	
 	        }
 	        
 
         	
         	RunGUI.startGUI();
-	        
-        	for(String value: jpsMap.values()){
-        		System.out.println(value);
-        		RunGUI.createLabels(value);
-        	}
-        	RunGUI.addLabels();
+	            
+        	RunGUI.addLabels(jpsMap);
+        	
+        	
         	
 	        while(true){
 	        	process = command.getJps().start();      
@@ -64,14 +62,14 @@ public class JavaProcessUsage {
 		        	name=jps[1];
 		        	
 		        	if(!jpsMap.containsKey(pid)){
-		        		jpsMap.put(pid, name);
+		        		jpsMap.put(pid, new JavaProcess(pid,name));
 		        	}		        	
 		        	        	
 		        }
 	        	
 	        	
 	        	//long start = System.nanoTime();
-	        	test = new ArrayList<String>();
+	        	test = new ArrayList<JavaProcess>();
 		        process = command.getTop().start();
 		        scanner = new Scanner(process.getInputStream());
 		        
@@ -86,15 +84,18 @@ public class JavaProcessUsage {
 		        		jps=null; 
 		        		continue;
 		        	}
-		        	pid = jps[0];
-		        	cpu = jps[jps.length-4];
-		        	mem = jps[jps.length-3];	
-		        	name = jpsMap.get(pid);
-		        	formatted.append(String.format("%s %s%% CPU usage %s%% MEM usage by process %s  \n",formattedTime,cpu,mem,name));
-		        	test.add(name);
-		        	test.add(cpu);
-		        	test.add(mem);
-		        	test.add(formattedTime);
+		        	
+		        	jpsProcess = jpsMap.get(jps[0]);
+		        	jpsProcess.setCPU(jps[jps.length-4]);
+		        	jpsProcess.setMem(jps[jps.length-3]);
+		        	jpsProcess.setTime(formattedTime);
+		        	jpsMap.put(jps[0], jpsProcess);
+		        	
+		        	
+		        	formatted.append(String.format("%s %s%% CPU usage %s%% MEM usage by process %s  \n",formattedTime,jpsProcess.getCPU(),jpsProcess.getMem(),jpsProcess.getName()));
+		        	
+		        	test.add(jpsProcess);
+		        	jpsProcess=null;
 		        	
 		        }
 		        //long end = System.nanoTime();
@@ -104,7 +105,7 @@ public class JavaProcessUsage {
 	        	
 	        	
 		        try {
-		        	
+		        	test=null;
 		        	line=null;
 					formattedTime = null;
 		        	formatted =null;

@@ -2,6 +2,7 @@ package main.java;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -14,7 +15,9 @@ public class RunGUI  {
 	
 	static Interface gui;
 	static ArrayList<JLabel> labelList = new ArrayList<JLabel>();
-	static ArrayList<String> setLabels=new ArrayList<String>();
+	static ArrayList<JavaProcess> newLabels=new ArrayList<JavaProcess>();
+	public static HashMap<String, JavaProcess> jpsMap;
+	static int labelListValue,newLabelsValue;
 	
 	public static void startGUI(){
 		SwingUtilities.invokeLater(new Runnable() {
@@ -25,62 +28,67 @@ public class RunGUI  {
 		});
 	}
 	
-	public static void createLabels(String name){
 		
-		labelList.add(new JLabel(name,SwingConstants.CENTER));
-		labelList.add(new JLabel("cpu...",SwingConstants.CENTER));
-		labelList.add(new JLabel("mem...",SwingConstants.CENTER));
-		labelList.add(new JLabel("time...",SwingConstants.CENTER));
+	public static void addLabels(HashMap<String, JavaProcess> jpsMaps){
 		
-	}
-	
-	public static void addLabels(){
+		jpsMap = jpsMaps;
 		
 		SwingUtilities.invokeLater(new Runnable(){
 		    public void run(){
+		    		    		    	
+		    	for(JavaProcess value: jpsMap.values()){	        		
+		    		labelList.add(new JLabel(value.getName(),SwingConstants.CENTER));
+		    		labelList.add(new JLabel("updating...",SwingConstants.CENTER));
+		    		labelList.add(new JLabel("updating...",SwingConstants.CENTER));
+		    		labelList.add(new JLabel("updating...",SwingConstants.CENTER));	        		
+	        	}
 		    	
 		    	for(JLabel label : labelList){
 		    		label.setBorder(BorderFactory.createEtchedBorder());
-		    		gui.frame.add(label);
-		    		
-		    		
+		    		gui.frame.add(label);		    		
 		    	}
+		    	
 		    	gui.frame.pack();
 		   
 		    }
 		}); 		
 	}
 	
-	public static void setText(ArrayList<String> test){
-		setLabels = test;
-		//System.out.println(setLabels.size() + " "+ labelList.size());
+	public static void setText(ArrayList<JavaProcess> newLabel){
+		newLabels = newLabel;
+		labelListValue = labelList.size()/4;
+		newLabelsValue = newLabels.size();	
+		System.out.println(newLabels.size() + " "+ labelList.size());
 		
-		if(setLabels.size() < labelList.size()){
+		if(newLabelsValue < labelListValue){
 			
 			SwingUtilities.invokeLater(new Runnable(){
 			    public void run(){
-			    	int old = labelList.size();
-			
-					for(int i=0; i<(old-setLabels.size());i++){
+			  
+					for(int i=0; i<((labelListValue-newLabels.size())*4);i++){
 						gui.frame.remove(labelList.get(i));
 						labelList.remove(i);
 						
-					}
+					}	
+					
 				}
 			}); 
 		}
 		
-		if(setLabels.size() > labelList.size()){
+		if(newLabelsValue > labelListValue){
 			
 			SwingUtilities.invokeLater(new Runnable(){
 			    public void run(){
-			    	int old = labelList.size();
+			    	
 			
-					for(int i=0; i<(setLabels.size()-old);i++){
-						labelList.add(new JLabel("",SwingConstants.CENTER));			
+					for(int i=0; i<(newLabelsValue-labelListValue);i++){
+						labelList.add(new JLabel("",SwingConstants.CENTER));
+						labelList.add(new JLabel("",SwingConstants.CENTER));
+						labelList.add(new JLabel("",SwingConstants.CENTER));
+						labelList.add(new JLabel("",SwingConstants.CENTER));
 					}
 					
-					for(int i=old; i <labelList.size();i++){
+					for(int i=labelListValue; i <labelList.size();i++){
 						labelList.get(i).setBorder(BorderFactory.createEtchedBorder());
 						gui.frame.add(labelList.get(i));
 						
@@ -93,22 +101,24 @@ public class RunGUI  {
 		SwingUtilities.invokeLater(new Runnable(){
 		    public void run(){
 		    	
-		    	int i=0,j=1;
-		    	for(JLabel label : labelList){
+		    	int i=0;
+		    	for(JavaProcess jps: newLabels){
+		    	
+		    		labelList.get(i++).setText(jps.getName());
+		    		labelList.get(i++).setText(jps.getCPU());
+		    		labelList.get(i++).setText(jps.getMem());
+		    		labelList.get(i++).setText(jps.getTime());
 		    		
-		    		/*if(j%4==0){
-		    			
-		    		}*/
-		    		
-		    		label.setText(setLabels.get(i));
-		    		i++;
 		    		
 		    	}
+		    	newLabels=null;
 		    	gui.frame.pack();
-		    	setLabels =null;
+		    	
 		   
 		    }
 		}); 	
+		
+		
 		
 	}
 	
