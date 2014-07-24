@@ -6,7 +6,7 @@ import javax.swing.SwingConstants;
 
 public class JavaProcess {
 	
-	private String name,pid,cpu,mem, time;
+	private String name,pid,cpu,mem, time, maxCpu="0", maxMem="0";
 	
 	public JavaProcess(String pid, String name){
 		this.name=name;
@@ -46,6 +46,25 @@ public class JavaProcess {
 		this.time=time;
 	}
 	
+	public void setMaxCpu(String mcpu){
+		if(Double.parseDouble(maxCpu)<Double.parseDouble(mcpu)){
+			this.maxCpu=mcpu;
+		}
+	}
+
+	public String getMaxCpu(){
+		return maxCpu;
+	}
+	
+	public void setMaxMem(String mmex){
+		if(Double.parseDouble(maxMem)<Double.parseDouble(mmex)){
+			this.maxMem=mmex;
+		}
+	}
+
+	public String getMaxMem(){
+		return maxMem;
+	}
 
 
 	

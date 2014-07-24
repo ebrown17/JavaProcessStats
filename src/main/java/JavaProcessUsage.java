@@ -33,24 +33,42 @@ public class JavaProcessUsage {
 	        scanner = new Scanner(process.getInputStream());	     
 	        
 	        while(scanner.hasNext()){
-	        	line=scanner.nextLine();	        	
+	        	line=scanner.nextLine();
+	        	//System.out.println(line);
 	        	if(line.contains("Jps"))continue;
 	        	jps = line.trim().split("\\s+");
 	        	pid=jps[0];
-	        	name=jps[1];
+	        	name=jps[1];	
+	        	for(int i=0;i<jps.length;i++){
+	        			
+	        		if(jps[i].contains("prefix")){
+	        			jps=jps[i].split("=");
+	        			name=jps[1];
+	        			break;
+	        		}
+	        			
+	        	}
 	        	
 	        	jpsMap.put(pid, new JavaProcess(pid,name));	        	
 	        }
-	        
-
-        	
+	
         	RunGUI.startGUI();
-	            
-        	RunGUI.addLabels(jpsMap);
-        	
-        	
-        	
+
 	        while(true){
+	        	
+	        	process = command.getFree().start();
+	        	scanner = new Scanner(process.getInputStream());
+	        	
+	        	while(scanner.hasNext()){
+		        	line=scanner.nextLine();	        	
+		        	if(line.contains("+") || line.contains("Swap")||line.contains("total"))continue;
+		        	jps = line.trim().split("\\s+");
+		        	
+		        	RunGUI.setMemText(jps[1], jps[2], jps[3]);
+        	
+		        }
+	        	
+	        	
 	        	process = command.getJps().start();      
 		        scanner = new Scanner(process.getInputStream());	     
 		        
@@ -58,8 +76,19 @@ public class JavaProcessUsage {
 		        	line=scanner.nextLine();	        	
 		        	if(line.contains("Jps"))continue;
 		        	jps = line.trim().split("\\s+");
-		        	pid=jps[0];
-		        	name=jps[1];
+		        	
+		        		pid=jps[0];
+		        		name=jps[1];
+		        	 
+		        	for(int i=0;i<jps.length;i++){
+	        			
+	        		if(jps[i].contains("prefix")){
+	        			jps=jps[i].split("=");
+	        			name=jps[1];
+	        			break;
+	        		}
+	        			
+	        	}
 		        	
 		        	if(!jpsMap.containsKey(pid)){
 		        		jpsMap.put(pid, new JavaProcess(pid,name));
@@ -87,7 +116,9 @@ public class JavaProcessUsage {
 		        	
 		        	jpsProcess = jpsMap.get(jps[0]);
 		        	jpsProcess.setCPU(jps[jps.length-4]);
+		        	jpsProcess.setMaxCpu(jps[jps.length-4]);
 		        	jpsProcess.setMem(jps[jps.length-3]);
+		        	jpsProcess.setMaxMem(jps[jps.length-3]);
 		        	jpsProcess.setTime(formattedTime);
 		        	jpsMap.put(jps[0], jpsProcess);
 		        	
