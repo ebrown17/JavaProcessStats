@@ -70,7 +70,7 @@ public class RunGUI {
 		labelListValue = labelList.size()/6;
 		newLabelsValue = newLabels.size();	
 		
-		System.out.println(newLabels.size() + " "+ labelList.size());
+		//System.out.println(newLabels.size() + " "+ labelList.size());
 		
 		if(newLabelsValue < labelListValue){
 			

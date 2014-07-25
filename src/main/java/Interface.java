@@ -51,7 +51,7 @@ public class Interface {
 			 
             public void actionPerformed(ActionEvent e)
             {
-            	System.out.println("pressed");
+            	//System.out.println("pressed");
         		if(e.getActionCommand().equals("Record") && !pressed){
         			record.setText("Recording");
         			recordLabel.setText("Recording to file");
@@ -63,14 +63,8 @@ public class Interface {
         			record.setText("Record");
         		}
             }
-        });      
-		
-		
-		
-		
-		
-		
-		
+		});      
+	
 		JLabel jTotal = new JLabel(" Total ",SwingConstants.CENTER);
 		jTotal.setBorder(BorderFactory.createRaisedBevelBorder());
 		jTotal.setBackground(Color.DARK_GRAY);

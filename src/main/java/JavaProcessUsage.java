@@ -38,7 +38,8 @@ public class JavaProcessUsage {
 	        	if(line.contains("Jps"))continue;
 	        	jps = line.trim().split("\\s+");
 	        	pid=jps[0];
-	        	name=jps[1];	
+	        	if(jps[1].contains("eclipse"))name="eclipse";
+	        	else name=jps[1];	
 	        	for(int i=0;i<jps.length;i++){
 	        			
 	        		if(jps[i].contains("prefix")){
